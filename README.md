@@ -12,4 +12,4 @@ So have fun and do something great.
 
 ## Do you need a book?
 
-Check out [this] (http://www.desy.de/~blobel/eBuch.pdf).
+Check out [this](http://www.desy.de/~blobel/eBuch.pdf).
