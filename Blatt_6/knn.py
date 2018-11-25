@@ -74,7 +74,7 @@ class KNN:
 
     def label_prediction(self, x_0, dataset, labelset, klist):
         # calculate the distance between every point and the test point
-        distance = cdist(x_0.reshape(1, 2), dataset)[0]
+        distance = cdist(x_0.reshape(1, x_0.shape[0]), dataset)[0]
         # Calculate the label of the datapoint
         mean_label = 1/self.k * labelset[distance.argsort()[-self.k:]].sum()
 
