@@ -2,6 +2,7 @@ import numpy as np
 from scipy.spatial.distance import cdist
 from sklearn.datasets import make_blobs
 from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
 
 
 class KNN:
@@ -27,10 +28,10 @@ class KNN:
         self.traning_dataset = None
 
         # Predicted label of the test traning_set
-        self.label_fit = []
+        self.label_traning_dataset = None
 
         # Predicted label of the real dataset
-        self.label_predict = []
+        self.label_predict = None
 
 
     def fit(self, X, y):
@@ -46,9 +47,7 @@ class KNN:
         '''
         # Code
         self.traning_dataset = X
-        for i in range(X.shape[0]):
-            self.label_prediction(X[i], X, y, self.label_fit)
-        return self.label_fit
+        self.label_traning_dataset = y
 
 
     def predict(self, X_pred):
@@ -66,28 +65,32 @@ class KNN:
             Predictions, containing the predicted label of each sample.
         '''
         # Code
+        self.label_predict = np.zeros(len(X_pred))
+        dataset = self.traning_dataset
+        labelset = self.label_traning_dataset
         for i in range(X_pred.shape[0]):
-            self.label_prediction(X_pred[i], self.traning_dataset,
-                                  np.array(self.label_fit), self.label_predict)
+
+            # calculate the distance between every point and the test point
+            #print(X_pred[i].reshape(1, X_pred[i].shape[0]), dataset)
+            distance = cdist(X_pred[i].reshape(1, X_pred[i].shape[0]), dataset)[0]
+            # Calculate the label of the datapoint
+            mean_label = 1/self.k * labelset[distance.argsort()[:self.k]].sum()
+            # Addiere 0.01 auf mean_label, damit bei 0.5 aufgerundet wird
+            self.label_predict[i] = np.ceil(mean_label)
 
         return np.array(self.label_predict)
 
-    def label_prediction(self, x_0, dataset, labelset, klist):
-        # calculate the distance between every point and the test point
-        distance = cdist(x_0.reshape(1, x_0.shape[0]), dataset)[0]
-        # Calculate the label of the datapoint
-        mean_label = 1/self.k * labelset[distance.argsort()[-self.k:]].sum()
-
-        # Addiere 0.01 auf mean_label, damit bei 0.5 aufgerundet wird
-        klist.append(int(np.round(mean_label + 0.01)))
-
-
 if __name__ == "__main__":
-    knn = KNN(5)
-    X, y = make_blobs(n_samples=500, n_features=2, centers=2, random_state=12,
-                      cluster_std=1.4)
+    knn = KNN(10)
+    X, y = make_blobs(n_samples=10000, n_features=3, centers=2, random_state=20,
+                      cluster_std=8)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.5)
 
     knn.fit(X_train, y_train)
-    knn.predict(X_test)
+    label = knn.predict(X_test)
     print(len(X_test), X_test.shape)
+
+    plt.scatter(X_test[:, 0], X_test[:, 1], c= label)
+    plt.show()
+    plt.scatter(X_test[:, 0], X_test[:, 1], c=y_test)
+    plt.show()
