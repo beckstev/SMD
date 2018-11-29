@@ -66,13 +66,15 @@ class KNN:
         '''
         # Code
         self.label_predict = np.zeros(len(X_pred))
+
         dataset = self.traning_dataset
         labelset = self.label_traning_dataset
-        for i in range(X_pred.shape[0]):
 
+        for i in range(X_pred.shape[0]):
             # calculate the distance between every point and the test point
-            #print(X_pred[i].reshape(1, X_pred[i].shape[0]), dataset)
+            # print(X_pred[i].reshape(1, X_pred[i].shape[0]), dataset)
             distance = cdist(X_pred[i].reshape(1, X_pred[i].shape[0]), dataset)[0]
+            print(dataset.shape, X_pred[i].reshape(1, X_pred[i].shape[0]).shape)
             # Calculate the label of the datapoint
             mean_label = 1/self.k * labelset[distance.argsort()[:self.k]].sum()
             # Addiere 0.01 auf mean_label, damit bei 0.5 aufgerundet wird
