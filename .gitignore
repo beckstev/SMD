@@ -2,3 +2,5 @@
 *.hdf5
 results/*
 .ipynb_checkpoints/*
+*.png
+*.tex
